@@ -86,8 +86,14 @@ const Watch = () => {
     return `${cleanTitle || "VJ_Movie"}.mp4`;
   };
   
-  // Download handler - direct download without subscription check
+  // Download handler - requires subscription
   const handleDownload = async () => {
+    if (!canWatch) {
+      setShowSubscriptionModal(true);
+      toast.error("Subscribe to download movies");
+      return;
+    }
+    
     if (!rawStreamlink) return;
     try {
       setIsDownloading(true);
