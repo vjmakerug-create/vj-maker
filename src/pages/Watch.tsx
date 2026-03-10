@@ -19,7 +19,6 @@ const Watch = () => {
   const { movie: firebaseMovie, loading } = useMovie(id || "");
   const { movies: allMovies } = useMovies();
   const [currentEpisode, setCurrentEpisode] = useState(0);
-  const [isDownloading, setIsDownloading] = useState(false);
   const [isInList, setIsInList] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   
