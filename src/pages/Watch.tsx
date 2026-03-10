@@ -9,7 +9,7 @@ import EpisodeSelector from "@/components/EpisodeSelector";
 import ArtPlayerVideo from "@/components/ArtPlayerVideo";
 import LoginModal from "@/components/LoginModal";
 import { useMovie, useMovies } from "@/hooks/useMovies";
-import { getGoogleDriveEmbedUrl, getGoogleDriveDownloadUrl, getGoogleDriveDirectDownloadUrl } from "@/lib/firebase";
+import { getGoogleDriveEmbedUrl, extractGoogleDriveFileId } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { toast } from "sonner";
@@ -19,7 +19,6 @@ const Watch = () => {
   const { movie: firebaseMovie, loading } = useMovie(id || "");
   const { movies: allMovies } = useMovies();
   const [currentEpisode, setCurrentEpisode] = useState(0);
-  const [isDownloading, setIsDownloading] = useState(false);
   const [isInList, setIsInList] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   
@@ -86,8 +85,8 @@ const Watch = () => {
     return `${cleanTitle || "VJ_Movie"}.mp4`;
   };
   
-  // Download handler - requires subscription
-  const handleDownload = async () => {
+  // Download handler - requires subscription, uses worker backend
+  const handleDownload = () => {
     if (!canWatch) {
       setShowSubscriptionModal(true);
       toast.error("Subscribe to download movies");
@@ -95,45 +94,26 @@ const Watch = () => {
     }
     
     if (!rawStreamlink) return;
-    try {
-      setIsDownloading(true);
-      const filename = getDownloadFilename();
+    
+    const filename = getDownloadFilename();
 
-      const triggerBlobDownload = async (url: string) => {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(blobUrl);
-      };
-
-      if (isDirectVideoUrl(rawStreamlink)) {
-        await triggerBlobDownload(rawStreamlink);
-      } else {
-        // Try Cloudflare Worker first, fall back to direct Google Drive
-        const workerUrl = getGoogleDriveDownloadUrl(rawStreamlink, filename);
-        try {
-          await triggerBlobDownload(workerUrl);
-        } catch (workerError) {
-          console.warn("Worker download failed, falling back to direct Google Drive:", workerError);
-          const directUrl = getGoogleDriveDirectDownloadUrl(rawStreamlink);
-          await triggerBlobDownload(directUrl);
-        }
-      }
-
+    if (isDirectVideoUrl(rawStreamlink)) {
+      // Direct video URL - open in new tab
+      window.open(rawStreamlink, "_blank");
       toast.success("Download started!");
-      setTimeout(() => setIsDownloading(false), 2000);
-    } catch (error) {
-      console.error("Download error:", error);
-      toast.error("Download failed. Please try again.");
-      setIsDownloading(false);
+      return;
     }
+
+    // Use the Cloudflare Worker backend for Google Drive files
+    const fileId = extractGoogleDriveFileId(rawStreamlink);
+    if (!fileId) {
+      toast.error("Could not extract file ID for download");
+      return;
+    }
+
+    const workerUrl = `https://download.vjmakerug.workers.dev/download?fileId=${encodeURIComponent(fileId)}&fileName=${encodeURIComponent(filename)}`;
+    window.open(workerUrl, "_blank");
+    toast.success("Download started!");
   };
 
   // Watch Now handler - scroll to video
@@ -434,11 +414,11 @@ const Watch = () => {
               </button>
               <button 
                 onClick={handleDownload}
-                disabled={isDownloading || !rawStreamlink}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white text-xs font-medium rounded hover:bg-primary/90 transition-colors disabled:opacity-50"
+                disabled={!rawStreamlink}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-medium rounded hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
-                <Download className={`w-3 h-3 ${isDownloading ? "animate-bounce" : ""}`} />
-                {isDownloading ? "Downloading..." : "Download"}
+                <Download className="w-3 h-3" />
+                Download
               </button>
             </div>
           </div>
