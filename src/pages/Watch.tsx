@@ -414,11 +414,11 @@ const Watch = () => {
               </button>
               <button 
                 onClick={handleDownload}
-                disabled={isDownloading || !rawStreamlink}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white text-xs font-medium rounded hover:bg-primary/90 transition-colors disabled:opacity-50"
+                disabled={!rawStreamlink}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-medium rounded hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
-                <Download className={`w-3 h-3 ${isDownloading ? "animate-bounce" : ""}`} />
-                {isDownloading ? "Downloading..." : "Download"}
+                <Download className="w-3 h-3" />
+                Download
               </button>
             </div>
           </div>
