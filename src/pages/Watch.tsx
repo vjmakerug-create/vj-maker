@@ -116,7 +116,12 @@ const Watch = () => {
     }
 
     const workerUrl = `https://download.vjmakerug.workers.dev/download?fileId=${encodeURIComponent(fileId)}&fileName=${encodeURIComponent(filename)}`;
-    window.open(workerUrl, "_blank");
+    const link = document.createElement("a");
+    link.href = workerUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     toast.success("Download started!");
   };
 
