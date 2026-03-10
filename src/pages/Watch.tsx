@@ -9,7 +9,7 @@ import EpisodeSelector from "@/components/EpisodeSelector";
 import ArtPlayerVideo from "@/components/ArtPlayerVideo";
 import LoginModal from "@/components/LoginModal";
 import { useMovie, useMovies } from "@/hooks/useMovies";
-import { getGoogleDriveEmbedUrl, getGoogleDriveDownloadUrl, getGoogleDriveDirectDownloadUrl } from "@/lib/firebase";
+import { getGoogleDriveEmbedUrl, extractGoogleDriveFileId } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { toast } from "sonner";
