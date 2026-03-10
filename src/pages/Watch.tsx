@@ -86,8 +86,8 @@ const Watch = () => {
     return `${cleanTitle || "VJ_Movie"}.mp4`;
   };
   
-  // Download handler - requires subscription
-  const handleDownload = async () => {
+  // Download handler - requires subscription, uses worker backend
+  const handleDownload = () => {
     if (!canWatch) {
       setShowSubscriptionModal(true);
       toast.error("Subscribe to download movies");
@@ -95,45 +95,26 @@ const Watch = () => {
     }
     
     if (!rawStreamlink) return;
-    try {
-      setIsDownloading(true);
-      const filename = getDownloadFilename();
+    
+    const filename = getDownloadFilename();
 
-      const triggerBlobDownload = async (url: string) => {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(blobUrl);
-      };
-
-      if (isDirectVideoUrl(rawStreamlink)) {
-        await triggerBlobDownload(rawStreamlink);
-      } else {
-        // Try Cloudflare Worker first, fall back to direct Google Drive
-        const workerUrl = getGoogleDriveDownloadUrl(rawStreamlink, filename);
-        try {
-          await triggerBlobDownload(workerUrl);
-        } catch (workerError) {
-          console.warn("Worker download failed, falling back to direct Google Drive:", workerError);
-          const directUrl = getGoogleDriveDirectDownloadUrl(rawStreamlink);
-          await triggerBlobDownload(directUrl);
-        }
-      }
-
+    if (isDirectVideoUrl(rawStreamlink)) {
+      // Direct video URL - open in new tab
+      window.open(rawStreamlink, "_blank");
       toast.success("Download started!");
-      setTimeout(() => setIsDownloading(false), 2000);
-    } catch (error) {
-      console.error("Download error:", error);
-      toast.error("Download failed. Please try again.");
-      setIsDownloading(false);
+      return;
     }
+
+    // Use the Cloudflare Worker backend for Google Drive files
+    const fileId = extractGoogleDriveFileId(rawStreamlink);
+    if (!fileId) {
+      toast.error("Could not extract file ID for download");
+      return;
+    }
+
+    const workerUrl = `https://download.vjmakerug.workers.dev/download?fileId=${encodeURIComponent(fileId)}&fileName=${encodeURIComponent(filename)}`;
+    window.open(workerUrl, "_blank");
+    toast.success("Download started!");
   };
 
   // Watch Now handler - scroll to video
