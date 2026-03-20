@@ -1334,17 +1334,17 @@ const WithdrawModal = ({ open, onOpenChange, wallet, adminEmail, onWithdraw }: {
         try {
           setBalanceLoading(true);
           setApiBalance(null); // Reset before fetching
-          const response = await fetch("https://api.vjmakerug.workers.dev/api/wallet/balance");
+          const response = await fetch("https://function-bun-production-0c2c.up.railway.app/api/wallet/balance");
           const data = await response.json();
           console.log("Withdraw modal - Wallet balance response:", data);
           
           // Check for balance in response - try multiple locations
           let balance: number | null = null;
           if (data.success) {
-            if (typeof data.relworx?.balance === 'number') {
-              balance = data.relworx.balance;
-            } else if (typeof data.balance === 'number') {
+            if (typeof data.balance === 'number') {
               balance = data.balance;
+            } else if (typeof data.relworx?.balance === 'number') {
+              balance = data.relworx.balance;
             }
           }
           
@@ -1404,12 +1404,12 @@ const WithdrawModal = ({ open, onOpenChange, wallet, adminEmail, onWithdraw }: {
       
       // Refetch the balance from API after successful withdrawal
       try {
-        const balRes = await fetch("https://api.vjmakerug.workers.dev/api/wallet/balance");
+        const balRes = await fetch("https://function-bun-production-0c2c.up.railway.app/api/wallet/balance");
         const balData = await balRes.json();
-        const newBalance = typeof balData?.relworx?.balance === 'number'
-          ? balData.relworx.balance
-          : typeof balData?.balance === 'number'
-            ? balData.balance
+        const newBalance = typeof balData?.balance === 'number'
+          ? balData.balance
+          : typeof balData?.relworx?.balance === 'number'
+            ? balData.relworx.balance
             : null;
         if (newBalance !== null) {
           setApiBalance(newBalance);

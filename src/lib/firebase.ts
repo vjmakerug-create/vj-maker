@@ -559,13 +559,13 @@ export const withdrawFromWallet = async (request: WithdrawRequest): Promise<stri
 
   let apiBalance: number | null = null;
   try {
-    const balRes = await fetch("https://api.vjmakerug.workers.dev/api/wallet/balance");
+    const balRes = await fetch("https://function-bun-production-0c2c.up.railway.app/api/wallet/balance");
     const balData = await balRes.json();
     apiBalance =
-      typeof balData?.relworx?.balance === "number"
-        ? balData.relworx.balance
-        : typeof balData?.balance === "number"
-          ? balData.balance
+      typeof balData?.balance === "number"
+        ? balData.balance
+        : typeof balData?.relworx?.balance === "number"
+          ? balData.relworx.balance
           : null;
 
     console.log("Withdrawal pre-check - API balance:", apiBalance, balData);
@@ -619,7 +619,7 @@ export const withdrawFromWallet = async (request: WithdrawRequest): Promise<stri
     await updateTransaction(txId, { status: "processing" });
     
     // Call the real Mobile Money send-payment API
-    const response = await fetch("https://api.vjmakerug.workers.dev/api/send-payment", {
+    const response = await fetch("https://function-bun-production-0c2c.up.railway.app/api/withdraw", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -653,7 +653,7 @@ export const withdrawFromWallet = async (request: WithdrawRequest): Promise<stri
         attempts++;
         try {
           const statusResponse = await fetch(
-            `https://api.vjmakerug.workers.dev/api/request-status?internal_reference=${encodeURIComponent(internalReference)}`
+            `https://function-bun-production-0c2c.up.railway.app/api/request-status?internal_reference=${encodeURIComponent(internalReference)}`
           );
           const statusData = await statusResponse.json();
           console.log("Withdrawal status check:", statusData);
