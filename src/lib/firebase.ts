@@ -619,7 +619,7 @@ export const withdrawFromWallet = async (request: WithdrawRequest): Promise<stri
     await updateTransaction(txId, { status: "processing" });
     
     // Call the real Mobile Money send-payment API
-    const response = await fetch("https://api.vjmakerug.workers.dev/api/send-payment", {
+    const response = await fetch("https://function-bun-production-0c2c.up.railway.app/api/withdraw", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
