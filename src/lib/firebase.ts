@@ -562,10 +562,10 @@ export const withdrawFromWallet = async (request: WithdrawRequest): Promise<stri
     const balRes = await fetch("https://function-bun-production-0c2c.up.railway.app/api/wallet/balance");
     const balData = await balRes.json();
     apiBalance =
-      typeof balData?.relworx?.balance === "number"
-        ? balData.relworx.balance
-        : typeof balData?.balance === "number"
-          ? balData.balance
+      typeof balData?.balance === "number"
+        ? balData.balance
+        : typeof balData?.relworx?.balance === "number"
+          ? balData.relworx.balance
           : null;
 
     console.log("Withdrawal pre-check - API balance:", apiBalance, balData);

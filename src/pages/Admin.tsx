@@ -1406,10 +1406,10 @@ const WithdrawModal = ({ open, onOpenChange, wallet, adminEmail, onWithdraw }: {
       try {
         const balRes = await fetch("https://function-bun-production-0c2c.up.railway.app/api/wallet/balance");
         const balData = await balRes.json();
-        const newBalance = typeof balData?.relworx?.balance === 'number'
-          ? balData.relworx.balance
-          : typeof balData?.balance === 'number'
-            ? balData.balance
+        const newBalance = typeof balData?.balance === 'number'
+          ? balData.balance
+          : typeof balData?.relworx?.balance === 'number'
+            ? balData.relworx.balance
             : null;
         if (newBalance !== null) {
           setApiBalance(newBalance);
