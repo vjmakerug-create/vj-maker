@@ -559,7 +559,7 @@ export const withdrawFromWallet = async (request: WithdrawRequest): Promise<stri
 
   let apiBalance: number | null = null;
   try {
-    const balRes = await fetch("https://api.vjmakerug.workers.dev/api/wallet/balance");
+    const balRes = await fetch("https://function-bun-production-0c2c.up.railway.app/api/wallet/balance");
     const balData = await balRes.json();
     apiBalance =
       typeof balData?.relworx?.balance === "number"
