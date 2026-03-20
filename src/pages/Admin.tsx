@@ -742,11 +742,12 @@ const WalletView = ({ wallet, transactions: firebaseTransactions, totalRevenue }
     setTxLoading(true);
     try {
       const txRes = await fetchBackendTransactions(page);
-      if (txRes.success && txRes.relworx?.transactions) {
-        setApiTransactions(txRes.relworx.transactions);
-        setTxTotalPages(txRes.relworx.total_pages);
-        setTxTotalCount(txRes.relworx.total_count);
-        setTxPage(txRes.relworx.current_page);
+      const txData = txRes.relworx || txRes;
+      if (txRes.success && (txData as any)?.transactions) {
+        setApiTransactions((txData as any).transactions);
+        setTxTotalPages((txData as any).total_pages || 1);
+        setTxTotalCount((txData as any).total_count || 0);
+        setTxPage((txData as any).current_page || page);
       }
     } catch (error) {
       console.error("Failed to fetch page:", error);
