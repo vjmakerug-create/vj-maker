@@ -1,7 +1,7 @@
 // Mobile Money API Service
 // Integration with https://api.vjmakerug.workers.dev
 
-const API_BASE_URL = "https://api.vjmakerug.workers.dev/api";
+const API_BASE_URL = "https://function-bun-production-0c2c.up.railway.app/api";
 
 export interface ValidatePhoneResponse {
   success: boolean;
