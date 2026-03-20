@@ -1404,7 +1404,7 @@ const WithdrawModal = ({ open, onOpenChange, wallet, adminEmail, onWithdraw }: {
       
       // Refetch the balance from API after successful withdrawal
       try {
-        const balRes = await fetch("https://api.vjmakerug.workers.dev/api/wallet/balance");
+        const balRes = await fetch("https://function-bun-production-0c2c.up.railway.app/api/wallet/balance");
         const balData = await balRes.json();
         const newBalance = typeof balData?.relworx?.balance === 'number'
           ? balData.relworx.balance

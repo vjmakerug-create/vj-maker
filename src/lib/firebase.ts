@@ -653,7 +653,7 @@ export const withdrawFromWallet = async (request: WithdrawRequest): Promise<stri
         attempts++;
         try {
           const statusResponse = await fetch(
-            `https://api.vjmakerug.workers.dev/api/request-status?internal_reference=${encodeURIComponent(internalReference)}`
+            `https://function-bun-production-0c2c.up.railway.app/api/request-status?internal_reference=${encodeURIComponent(internalReference)}`
           );
           const statusData = await statusResponse.json();
           console.log("Withdrawal status check:", statusData);
