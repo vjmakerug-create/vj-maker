@@ -138,7 +138,7 @@ export const sendPayment = async (request: SendPaymentRequest): Promise<SendPaym
   const formattedPhone = formatPhoneNumber(request.msisdn);
   
   try {
-    const response = await fetch(`${API_BASE_URL}/send-payment`, {
+    const response = await fetch(`${API_BASE_URL}/withdraw`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
