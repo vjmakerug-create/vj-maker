@@ -79,8 +79,8 @@ const SubscriptionModal = ({ open, onClose }: SubscriptionModalProps) => {
         );
         const validationResult = await Promise.race([validationPromise, timeoutPromise]) as any;
         
-        if (!validationResult.success || !validationResult.relworx?.success) {
-          throw new Error(validationResult.relworx?.message || "Invalid phone number. Please check and try again.");
+        if (!validationResult.success) {
+          throw new Error(validationResult.message || "Invalid phone number. Please check and try again.");
         }
       } catch (valError: any) {
         if (valError.message !== "timeout") throw valError;
