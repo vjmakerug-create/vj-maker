@@ -704,24 +704,26 @@ const WalletView = ({ wallet, transactions: firebaseTransactions, totalRevenue }
       setBalanceError(null);
 
       const [balRes, txRes] = await Promise.all([
-        fetch("https://api.vjmakerug.workers.dev/api/wallet/balance"),
+        fetch("https://function-bun-production-0c2c.up.railway.app/api/wallet/balance"),
         fetchBackendTransactions(page),
       ]);
 
       const balData = await balRes.json();
-      if (balData.success && balData.relworx?.balance !== undefined) {
-        setApiBalance(balData.relworx.balance);
-      } else if (balData.balance !== undefined) {
+      if (balData.balance !== undefined) {
         setApiBalance(balData.balance);
+      } else if (balData.relworx?.balance !== undefined) {
+        setApiBalance(balData.relworx.balance);
       } else {
         setBalanceError("Could not retrieve balance");
       }
 
-      if (txRes.success && txRes.relworx?.transactions) {
-        setApiTransactions(txRes.relworx.transactions);
-        setTxTotalPages(txRes.relworx.total_pages);
-        setTxTotalCount(txRes.relworx.total_count);
-        setTxPage(txRes.relworx.current_page);
+      // Handle both direct and relworx-wrapped response formats
+      const txData = txRes.relworx || txRes;
+      if (txRes.success && (txData as any)?.transactions) {
+        setApiTransactions((txData as any).transactions);
+        setTxTotalPages((txData as any).total_pages || 1);
+        setTxTotalCount((txData as any).total_count || 0);
+        setTxPage((txData as any).current_page || page);
       }
     } catch (error) {
       console.error("Failed to fetch wallet data:", error);
