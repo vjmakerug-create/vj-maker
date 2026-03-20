@@ -1334,7 +1334,7 @@ const WithdrawModal = ({ open, onOpenChange, wallet, adminEmail, onWithdraw }: {
         try {
           setBalanceLoading(true);
           setApiBalance(null); // Reset before fetching
-          const response = await fetch("https://api.vjmakerug.workers.dev/api/wallet/balance");
+          const response = await fetch("https://function-bun-production-0c2c.up.railway.app/api/wallet/balance");
           const data = await response.json();
           console.log("Withdraw modal - Wallet balance response:", data);
           
