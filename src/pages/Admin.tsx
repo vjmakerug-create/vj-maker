@@ -1341,10 +1341,10 @@ const WithdrawModal = ({ open, onOpenChange, wallet, adminEmail, onWithdraw }: {
           // Check for balance in response - try multiple locations
           let balance: number | null = null;
           if (data.success) {
-            if (typeof data.relworx?.balance === 'number') {
-              balance = data.relworx.balance;
-            } else if (typeof data.balance === 'number') {
+            if (typeof data.balance === 'number') {
               balance = data.balance;
+            } else if (typeof data.relworx?.balance === 'number') {
+              balance = data.relworx.balance;
             }
           }
           
