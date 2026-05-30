@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { SUBSCRIPTION_PLANS, SubscriptionPlan } from "@/contexts/SubscriptionContext";
 import { 
-  Film, Tv, Users, CreditCard, Wallet, Plus, Trash2, Edit, 
+  Film, Tv, Users, CreditCard, Wallet, Plus, Trash2, Edit, Music as MusicIcon,
   LogOut, Menu, X, ChevronDown, DollarSign, TrendingUp, Eye, Crown, RefreshCw
 } from "lucide-react";
 import { toast } from "sonner";
@@ -38,6 +38,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import MusicAdmin from "@/components/admin/MusicAdmin";
 import {
   Select,
   SelectContent,
@@ -118,6 +119,7 @@ const Admin = () => {
   const sidebarItems = [
     { id: "movies", label: "Movies", icon: Film, count: moviesOnly.length },
     { id: "series", label: "TV Series", icon: Tv, count: series.length },
+    { id: "music", label: "Music", icon: MusicIcon },
     { id: "users", label: "Users", icon: Users, count: users.length },
     { id: "subscriptions", label: "Subscriptions", icon: CreditCard, count: activeSubscriptions.length },
     { id: "wallet", label: "Wallet", icon: Wallet },
@@ -287,6 +289,9 @@ const Admin = () => {
           {activeTab === "wallet" && (
             <WalletView wallet={wallet} transactions={transactions} totalRevenue={totalRevenue} />
           )}
+
+          {/* Music Tab */}
+          {activeTab === "music" && <MusicAdmin />}
         </div>
       </main>
 
