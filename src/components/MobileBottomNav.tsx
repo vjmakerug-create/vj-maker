@@ -1,4 +1,4 @@
-import { Home, Film, Tv, User, LogIn } from "lucide-react";
+import { Home, Film, Tv, User, LogIn, Music as MusicIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
@@ -104,6 +104,12 @@ const MobileBottomNav = () => {
             icon={<Tv className="w-5 h-5" />}
             label="Series"
             isActive={isActive("/series")}
+          />
+          <NavItem
+            to="/music"
+            icon={<MusicIcon className="w-5 h-5" />}
+            label="Music"
+            isActive={isActive("/music")}
           />
           {user ? (
             <NavItem
