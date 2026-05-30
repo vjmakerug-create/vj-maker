@@ -120,6 +120,40 @@ export interface WalletData {
   lastUpdated: string;
 }
 
+// ============ MUSIC ============
+export interface MusicTrack {
+  trackNumber: number;
+  title: string;
+  audioUrl: string;
+  duration?: string;
+}
+
+export interface FirebaseSong {
+  id: string;
+  title: string;
+  artist?: string;
+  album?: string;
+  cover?: string;
+  audioUrl: string;
+  genre?: string;
+  year?: number;
+  isFeatured?: boolean;
+  createdAt?: string;
+}
+
+export interface FirebaseAlbum {
+  id: string;
+  title: string;
+  artist?: string;
+  cover?: string;
+  year?: number;
+  genre?: string;
+  description?: string;
+  tracks?: MusicTrack[];
+  isFeatured?: boolean;
+  createdAt?: string;
+}
+
 // Parse snapshot data to movie array
 const parseSnapshotData = (snapshot: DataSnapshot, type: "movie" | "series"): FirebaseMovie[] => {
   if (!snapshot.exists()) return [];
@@ -162,7 +196,7 @@ const sortMovies = (movies: FirebaseMovie[]): FirebaseMovie[] => {
 
 // Real-time listener for movies - calls callback whenever data changes
 export const subscribeToMovies = (callback: (movies: FirebaseMovie[]) => void): (() => void) => {
-  const paths = ["movies", "series", "originals", "animation", "music"];
+  const paths = ["movies", "series", "originals", "animation"];
   const unsubscribes: (() => void)[] = [];
   
   let allContent: FirebaseMovie[] = [];
@@ -197,7 +231,7 @@ export const subscribeToMovies = (callback: (movies: FirebaseMovie[]) => void): 
 // One-time fetch (fallback)
 export const fetchMovies = async (): Promise<FirebaseMovie[]> => {
   try {
-    const paths = ["movies", "series", "originals", "animation", "music"];
+    const paths = ["movies", "series", "originals", "animation"];
     
     const results = await Promise.all(
       paths.map(async (path) => {
@@ -218,7 +252,7 @@ export const fetchMovies = async (): Promise<FirebaseMovie[]> => {
 
 export const fetchMovie = async (id: string): Promise<FirebaseMovie | null> => {
   try {
-    const paths = ["movies", "series", "originals", "animation", "music"];
+    const paths = ["movies", "series", "originals", "animation"];
     
     for (const path of paths) {
       const dbRef = ref(database);
