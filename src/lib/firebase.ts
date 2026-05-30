@@ -750,3 +750,121 @@ export const updateTransaction = async (id: string, data: Partial<Transaction>) 
   const txRef = ref(database, `transactions/${id}`);
   await update(txRef, data);
 };
+
+// ============ MUSIC CRUD ============
+const parseMusicItems = <T extends { id: string }>(snapshot: DataSnapshot): T[] => {
+  if (!snapshot.exists()) return [];
+  const data = snapshot.val();
+  return Object.entries(data).map(([key, value]: [string, any]) => ({
+    id: key,
+    ...value,
+  })) as T[];
+};
+
+const sortByCreatedAt = <T extends { createdAt?: string }>(items: T[]): T[] => {
+  return items.sort((a, b) => {
+    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return dateB - dateA;
+  });
+};
+
+// Songs
+export const subscribeToSongs = (callback: (songs: FirebaseSong[]) => void): (() => void) => {
+  const dbRef = ref(database, "songs");
+  return onValue(dbRef, (snapshot) => {
+    callback(sortByCreatedAt(parseMusicItems<FirebaseSong>(snapshot)));
+  });
+};
+
+export const fetchSongs = async (): Promise<FirebaseSong[]> => {
+  const dbRef = ref(database);
+  const snapshot = await get(child(dbRef, "songs"));
+  return sortByCreatedAt(parseMusicItems<FirebaseSong>(snapshot));
+};
+
+export const addSong = async (data: Omit<FirebaseSong, "id">) => {
+  const dbRef = ref(database, "songs");
+  const newRef = push(dbRef);
+  await set(newRef, { ...data, createdAt: new Date().toISOString() });
+  return newRef.key;
+};
+
+export const updateSong = async (id: string, data: Partial<FirebaseSong>) => {
+  await update(ref(database, `songs/${id}`), data);
+};
+
+export const deleteSong = async (id: string) => {
+  await remove(ref(database, `songs/${id}`));
+};
+
+// Albums
+export const subscribeToAlbums = (callback: (albums: FirebaseAlbum[]) => void): (() => void) => {
+  const dbRef = ref(database, "albums");
+  return onValue(dbRef, (snapshot) => {
+    callback(sortByCreatedAt(parseMusicItems<FirebaseAlbum>(snapshot)));
+  });
+};
+
+export const fetchAlbums = async (): Promise<FirebaseAlbum[]> => {
+  const dbRef = ref(database);
+  const snapshot = await get(child(dbRef, "albums"));
+  return sortByCreatedAt(parseMusicItems<FirebaseAlbum>(snapshot));
+};
+
+export const fetchAlbum = async (id: string): Promise<FirebaseAlbum | null> => {
+  const dbRef = ref(database);
+  const snapshot = await get(child(dbRef, `albums/${id}`));
+  if (!snapshot.exists()) return null;
+  return { id, ...snapshot.val() } as FirebaseAlbum;
+};
+
+export const addAlbum = async (data: Omit<FirebaseAlbum, "id">) => {
+  const dbRef = ref(database, "albums");
+  const newRef = push(dbRef);
+  await set(newRef, { ...data, createdAt: new Date().toISOString() });
+  return newRef.key;
+};
+
+export const updateAlbum = async (id: string, data: Partial<FirebaseAlbum>) => {
+  await update(ref(database, `albums/${id}`), data);
+};
+
+export const deleteAlbum = async (id: string) => {
+  await remove(ref(database, `albums/${id}`));
+};
+
+export const addTrackToAlbum = async (albumId: string, track: MusicTrack) => {
+  const albumRef = ref(database, `albums/${albumId}`);
+  const snapshot = await get(albumRef);
+  if (snapshot.exists()) {
+    const album = snapshot.val();
+    const tracks = album.tracks || [];
+    tracks.push(track);
+    await update(albumRef, { tracks });
+  }
+};
+
+export const updateTrack = async (albumId: string, index: number, data: Partial<MusicTrack>) => {
+  const albumRef = ref(database, `albums/${albumId}`);
+  const snapshot = await get(albumRef);
+  if (snapshot.exists()) {
+    const album = snapshot.val();
+    const tracks = album.tracks || [];
+    if (tracks[index]) {
+      tracks[index] = { ...tracks[index], ...data };
+      await update(albumRef, { tracks });
+    }
+  }
+};
+
+export const deleteTrack = async (albumId: string, index: number) => {
+  const albumRef = ref(database, `albums/${albumId}`);
+  const snapshot = await get(albumRef);
+  if (snapshot.exists()) {
+    const album = snapshot.val();
+    const tracks = album.tracks || [];
+    tracks.splice(index, 1);
+    await update(albumRef, { tracks });
+  }
+};
