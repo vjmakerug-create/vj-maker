@@ -1,10 +1,11 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Play, Disc3 } from "lucide-react";
+import { ArrowLeft, Play, Disc3, Download } from "lucide-react";
 import NavbarCompact from "@/components/NavbarCompact";
 import FooterCompact from "@/components/FooterCompact";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import { useAlbum } from "@/hooks/useMusic";
 import { useMusicPlayer, PlayableTrack } from "@/contexts/MusicContext";
+import { downloadTrack } from "@/components/MusicPlayer";
 
 const Album = () => {
   const { id } = useParams();
@@ -121,6 +122,19 @@ const Album = () => {
                   {track.duration && (
                     <span className="text-xs text-muted-foreground tabular-nums">{track.duration}</span>
                   )}
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      downloadTrack(track.audioUrl, track.title, album.artist);
+                    }}
+                    className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="Download"
+                    title="Download"
+                  >
+                    <Download className="w-4 h-4" />
+                  </span>
                   <Play className="w-4 h-4 text-muted-foreground" />
                 </button>
               );
