@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { Play, Music as MusicIcon, Disc3 } from "lucide-react";
+import { Play, Music as MusicIcon, Disc3, Download } from "lucide-react";
 import NavbarCompact from "@/components/NavbarCompact";
 import FooterCompact from "@/components/FooterCompact";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import { useSongs, useAlbums } from "@/hooks/useMusic";
 import { useMusicPlayer, PlayableTrack } from "@/contexts/MusicContext";
+import { downloadTrack } from "@/components/MusicPlayer";
 
 const Music = () => {
   const { songs, loading: songsLoading } = useSongs();
@@ -112,6 +113,19 @@ const Music = () => {
                         {song.year && (
                           <span className="hidden sm:inline text-xs text-muted-foreground">{song.year}</span>
                         )}
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            downloadTrack(song.audioUrl, song.title, song.artist);
+                          }}
+                          className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+                          aria-label="Download"
+                          title="Download"
+                        >
+                          <Download className="w-4 h-4" />
+                        </span>
                         <Play className="w-4 h-4 text-muted-foreground" />
                       </button>
                     );

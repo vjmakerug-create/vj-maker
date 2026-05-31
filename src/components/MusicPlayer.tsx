@@ -1,5 +1,24 @@
-import { Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Volume2, Download } from "lucide-react";
 import { useMusicPlayer } from "@/contexts/MusicContext";
+import { getGoogleDriveDownloadUrl, extractGoogleDriveFileId } from "@/lib/firebase";
+
+const triggerDownload = (url: string, title: string, artist?: string) => {
+  if (!url) return;
+  const safeTitle = `${artist ? artist + " - " : ""}${title}`.replace(/[^\w\s.-]/g, "_");
+  const fileName = `${safeTitle}.mp3`;
+  const downloadUrl = extractGoogleDriveFileId(url)
+    ? getGoogleDriveDownloadUrl(url, fileName)
+    : url;
+  const a = document.createElement("a");
+  a.href = downloadUrl;
+  a.download = fileName;
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
+
+export { triggerDownload as downloadTrack };
 
 const formatTime = (s: number) => {
   if (!isFinite(s)) return "0:00";
@@ -54,6 +73,14 @@ const MusicPlayer = () => {
               aria-label="Next"
             >
               <SkipForward className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => triggerDownload(current.audioUrl, current.title, current.artist)}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Download"
+              title="Download"
+            >
+              <Download className="w-4 h-4" />
             </button>
           </div>
           <div className="hidden md:flex items-center gap-2 w-full max-w-md">
