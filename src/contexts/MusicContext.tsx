@@ -133,7 +133,6 @@ export const MusicProvider = ({ children }: { children: ReactNode }) => {
         ref={audioRef}
         src={current ? resolveAudioUrl(current.audioUrl) : undefined}
         preload="metadata"
-        crossOrigin="anonymous"
       />
     </MusicContext.Provider>
   );
