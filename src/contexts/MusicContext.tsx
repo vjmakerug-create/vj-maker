@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState, ReactNode } from "react";
-import { getGoogleDriveDirectDownloadUrl, extractGoogleDriveFileId } from "@/lib/firebase";
+import { getGoogleDriveDownloadUrl, extractGoogleDriveFileId } from "@/lib/firebase";
 
 export interface PlayableTrack {
   id: string;
@@ -11,10 +11,12 @@ export interface PlayableTrack {
 }
 
 // Convert Google Drive share links into something <audio> can actually stream
-export const resolveAudioUrl = (url: string): string => {
+export const resolveAudioUrl = (url: string, fileName?: string): string => {
   if (!url) return "";
   if (extractGoogleDriveFileId(url)) {
-    return getGoogleDriveDirectDownloadUrl(url);
+    // Stream through the Cloudflare worker so the browser <audio> tag
+    // can play the file without Google Drive's CORS/redirect issues.
+    return getGoogleDriveDownloadUrl(url, fileName ? `${fileName}.mp3` : "audio.mp3");
   }
   return url;
 };
@@ -131,8 +133,9 @@ export const MusicProvider = ({ children }: { children: ReactNode }) => {
       {children}
       <audio
         ref={audioRef}
-        src={current ? resolveAudioUrl(current.audioUrl) : undefined}
+        src={current ? resolveAudioUrl(current.audioUrl, current.title) : undefined}
         preload="metadata"
+        crossOrigin="anonymous"
       />
     </MusicContext.Provider>
   );
