@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState, ReactNode } from "react";
+import { getGoogleDriveDirectDownloadUrl, extractGoogleDriveFileId } from "@/lib/firebase";
 
 export interface PlayableTrack {
   id: string;
@@ -8,6 +9,15 @@ export interface PlayableTrack {
   audioUrl: string;
   albumTitle?: string;
 }
+
+// Convert Google Drive share links into something <audio> can actually stream
+export const resolveAudioUrl = (url: string): string => {
+  if (!url) return "";
+  if (extractGoogleDriveFileId(url)) {
+    return getGoogleDriveDirectDownloadUrl(url);
+  }
+  return url;
+};
 
 interface MusicContextType {
   current: PlayableTrack | null;
@@ -119,7 +129,12 @@ export const MusicProvider = ({ children }: { children: ReactNode }) => {
       }}
     >
       {children}
-      <audio ref={audioRef} src={current?.audioUrl} preload="metadata" />
+      <audio
+        ref={audioRef}
+        src={current ? resolveAudioUrl(current.audioUrl) : undefined}
+        preload="metadata"
+        crossOrigin="anonymous"
+      />
     </MusicContext.Provider>
   );
 };
