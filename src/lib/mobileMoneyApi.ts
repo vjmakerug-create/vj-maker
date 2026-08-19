@@ -152,8 +152,9 @@ export const sendPayment = async (request: SendPaymentRequest): Promise<SendPaym
     });
     
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      const errorData = await response.json().catch(() => ({} as any));
+      const detail = errorData?.details?.message || errorData?.message || errorData?.error;
+      throw new Error(detail || `HTTP error! status: ${response.status}`);
     }
     
     const data = await response.json();
@@ -186,8 +187,9 @@ export const sendPaymentRequest = async (request: SendPaymentRequest): Promise<S
     });
     
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      const errorData = await response.json().catch(() => ({} as any));
+      const detail = errorData?.details?.message || errorData?.message || errorData?.error;
+      throw new Error(detail || `HTTP error! status: ${response.status}`);
     }
     
     const data = await response.json();
