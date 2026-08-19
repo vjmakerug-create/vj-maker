@@ -6,11 +6,12 @@ import { List, LayoutGrid } from "lucide-react";
 interface MovieGridProps {
   movies: ExtendedMovie[];
   title: string;
+  showAll?: boolean;
 }
 
 const ITEMS_PER_PAGE = 24;
 
-const MovieGrid = ({ movies, title }: MovieGridProps) => {
+const MovieGrid = ({ movies, title, showAll = false }: MovieGridProps) => {
   const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -34,9 +35,11 @@ const MovieGrid = ({ movies, title }: MovieGridProps) => {
   });
 
   // Pagination
-  const totalPages = Math.ceil(filteredMovies.length / ITEMS_PER_PAGE);
+  const totalPages = showAll ? 1 : Math.ceil(filteredMovies.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedMovies = filteredMovies.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const paginatedMovies = showAll
+    ? filteredMovies
+    : filteredMovies.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const renderPagination = () => {
     const pages = [];
