@@ -33,7 +33,7 @@ const FooterCompact = () => {
             <a href="#" className="hover:text-foreground transition-colors">Contact</a>
           </div>
           <p className="text-xs text-muted-foreground">
-            © LUO MOVIES.SITE 2024. All rights reserved.
+            © VJ MAKER.SITE 2024. All rights reserved.
           </p>
         </div>
       </div>

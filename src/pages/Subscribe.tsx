@@ -19,7 +19,7 @@ const Subscribe = () => {
           <Film className="w-16 h-16 text-primary mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-foreground mb-2">Free Access!</h1>
           <p className="text-muted-foreground mb-4">
-            LUO MOVIES.SITE is completely free. Enjoy unlimited movies and series!
+            VJ MAKER.SITE is completely free. Enjoy unlimited movies and series!
           </p>
           <button
             onClick={() => navigate("/")}

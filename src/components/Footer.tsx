@@ -43,7 +43,7 @@ const Footer = () => {
                 <span className="text-white font-display font-bold text-xl">L</span>
               </div>
               <span className="font-display font-bold text-xl text-foreground">
-                LUO FILM
+                VJ MAKER.SITE
               </span>
             </a>
             <p className="text-muted-foreground text-sm mb-6">
@@ -87,7 +87,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-border mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2024 LUO FILM. All rights reserved.
+            © 2024 VJ MAKER.SITE. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <a href="#" className="hover:text-foreground transition-colors">

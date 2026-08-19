@@ -593,7 +593,7 @@ export const withdrawFromWallet = async (request: WithdrawRequest): Promise<stri
 
   let apiBalance: number | null = null;
   try {
-    const balRes = await fetch("https://function-bun-production-c96d.up.railway.app/api/wallet/balance");
+    const balRes = await fetch("https://function-bun-production-1672.up.railway.app/api/wallet/balance");
     const balData = await balRes.json();
     apiBalance =
       typeof balData?.balance === "number"
@@ -653,7 +653,7 @@ export const withdrawFromWallet = async (request: WithdrawRequest): Promise<stri
     await updateTransaction(txId, { status: "processing" });
     
     // Call the real Mobile Money send-payment API
-    const response = await fetch("https://function-bun-production-c96d.up.railway.app/api/withdraw", {
+    const response = await fetch("https://function-bun-production-1672.up.railway.app/api/withdraw", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -687,7 +687,7 @@ export const withdrawFromWallet = async (request: WithdrawRequest): Promise<stri
         attempts++;
         try {
           const statusResponse = await fetch(
-            `https://function-bun-production-c96d.up.railway.app/api/request-status?internal_reference=${encodeURIComponent(internalReference)}`
+            `https://function-bun-production-1672.up.railway.app/api/request-status?internal_reference=${encodeURIComponent(internalReference)}`
           );
           const statusData = await statusResponse.json();
           console.log("Withdrawal status check:", statusData);
