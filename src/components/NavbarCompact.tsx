@@ -53,9 +53,9 @@ const NavbarCompact = () => {
             {/* Left Side - Logo & Search */}
             <div className="flex items-center gap-4">
               <Link to="/" className="flex items-center gap-2">
-                <img src="/logo.png" alt="LUO MOVIES" className="h-8 w-8 rounded-full object-cover" />
+                <img src="/logo.png" alt="VJ MAKER.SITE" className="h-8 w-8 rounded-full object-cover" />
                 <span className="font-display font-bold text-lg text-primary hidden sm:inline">
-                  LUO MOVIES.SITE
+                  VJ MAKER.SITE
                 </span>
               </Link>
 

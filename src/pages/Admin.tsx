@@ -709,7 +709,7 @@ const WalletView = ({ wallet, transactions: firebaseTransactions, totalRevenue }
       setBalanceError(null);
 
       const [balRes, txRes] = await Promise.all([
-        fetch("https://function-bun-production-c96d.up.railway.app/api/wallet/balance"),
+        fetch("https://function-bun-production-1672.up.railway.app/api/wallet/balance"),
         fetchBackendTransactions(page),
       ]);
 
@@ -1339,7 +1339,7 @@ const WithdrawModal = ({ open, onOpenChange, wallet, adminEmail, onWithdraw }: {
         try {
           setBalanceLoading(true);
           setApiBalance(null); // Reset before fetching
-          const response = await fetch("https://function-bun-production-c96d.up.railway.app/api/wallet/balance");
+          const response = await fetch("https://function-bun-production-1672.up.railway.app/api/wallet/balance");
           const data = await response.json();
           console.log("Withdraw modal - Wallet balance response:", data);
           
@@ -1409,7 +1409,7 @@ const WithdrawModal = ({ open, onOpenChange, wallet, adminEmail, onWithdraw }: {
       
       // Refetch the balance from API after successful withdrawal
       try {
-        const balRes = await fetch("https://function-bun-production-c96d.up.railway.app/api/wallet/balance");
+        const balRes = await fetch("https://function-bun-production-1672.up.railway.app/api/wallet/balance");
         const balData = await balRes.json();
         const newBalance = typeof balData?.balance === 'number'
           ? balData.balance

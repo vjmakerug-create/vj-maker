@@ -24,7 +24,7 @@ const Navbar = () => {
                 <span className="text-white font-display font-bold text-xl">L</span>
               </div>
               <span className="font-display font-bold text-xl text-foreground hidden sm:block">
-                LUO FILM
+                VJ MAKER.SITE
               </span>
             </a>
 

@@ -146,7 +146,7 @@ const Watch = () => {
   const handleShare = async () => {
     const shareUrl = window.location.href;
     const shareTitle = displayMovie?.title || "Check out this movie";
-    const shareText = `Watch "${displayMovie?.title}" on LUO FILM - ${displayMovie?.description?.slice(0, 100)}...`;
+    const shareText = `Watch "${displayMovie?.title}" on VJ MAKER.SITE - ${displayMovie?.description?.slice(0, 100)}...`;
 
     if (navigator.share) {
       try {
