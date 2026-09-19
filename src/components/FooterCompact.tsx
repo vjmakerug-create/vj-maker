@@ -28,6 +28,7 @@ const FooterCompact = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground mb-3">
             <a href="#" className="hover:text-foreground transition-colors">Rules</a>
+            <a href="/agent" className="hover:text-foreground transition-colors">Become an Agent</a>
             <a href="#" className="hover:text-foreground transition-colors">Advertising</a>
             <a href="#" className="hover:text-foreground transition-colors">FAQ</a>
             <a href="#" className="hover:text-foreground transition-colors">Contact</a>

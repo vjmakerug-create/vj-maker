@@ -22,6 +22,7 @@ const NavbarCompact = () => {
     { name: "TV Series", href: "/series" },
     { name: "Animation", href: "/animation" },
     { name: "Music", href: "/music" },
+    { name: "Become an Agent", href: "/agent" },
   ];
 
   const handleSearch = (e: React.FormEvent) => {

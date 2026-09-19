@@ -14,6 +14,7 @@ import Animation from "./pages/Animation";
 import Search from "./pages/Search";
 import Subscribe from "./pages/Subscribe";
 import Admin from "./pages/Admin";
+import Agent from "./pages/Agent";
 import Music from "./pages/Music";
 import Album from "./pages/Album";
 import NotFound from "./pages/NotFound";
@@ -38,6 +39,7 @@ const AppRoutes = () => {
         <Route path="/search" element={<Search />} />
         <Route path="/watch/:id" element={<Watch />} />
         <Route path="/subscribe" element={<Subscribe />} />
+        <Route path="/agent" element={<Agent />} />
         <Route path="/admin" element={<Admin />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
