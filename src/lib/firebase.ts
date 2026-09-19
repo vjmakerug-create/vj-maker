@@ -868,3 +868,91 @@ export const deleteTrack = async (albumId: string, index: number) => {
     await update(albumRef, { tracks });
   }
 };
+
+// ============ AGENTS ============
+export type AgentStatus = "pending" | "approved" | "rejected" | "suspended";
+
+export interface Agent {
+  id: string;
+  uid: string;
+  email: string;
+  displayName: string;
+  phone: string;
+  location?: string;
+  about?: string;
+  code: string;
+  status: AgentStatus;
+  commissionRate: number; // percentage of each sale
+  createdAt: string;
+  approvedAt?: string;
+}
+
+export const DEFAULT_COMMISSION_RATE = 20;
+
+export const generateAgentCode = (name: string): string => {
+  const base = (name || "AGT").replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 3) || "AGT";
+  const rand = Math.random().toString(36).replace(/[^a-z0-9]/gi, "").slice(0, 4).toUpperCase();
+  return `${base}${rand}`;
+};
+
+export const applyAsAgent = async (
+  data: Pick<Agent, "uid" | "email" | "displayName" | "phone"> & { location?: string; about?: string }
+): Promise<string> => {
+  const dbRef = ref(database, "agents");
+  const newRef = push(dbRef);
+  const agent: Omit<Agent, "id"> = {
+    uid: data.uid,
+    email: data.email,
+    displayName: data.displayName,
+    phone: data.phone,
+    location: data.location || "",
+    about: data.about || "",
+    code: generateAgentCode(data.displayName),
+    status: "pending",
+    commissionRate: DEFAULT_COMMISSION_RATE,
+    createdAt: new Date().toISOString(),
+  };
+  await set(newRef, agent);
+  return newRef.key as string;
+};
+
+export const subscribeToAgents = (callback: (agents: Agent[]) => void): (() => void) => {
+  const dbRef = ref(database, "agents");
+  return onValue(dbRef, (snapshot) => {
+    if (!snapshot.exists()) {
+      callback([]);
+      return;
+    }
+    const data = snapshot.val();
+    callback(
+      Object.entries(data).map(([key, value]: [string, any]) => ({ id: key, ...value })) as Agent[]
+    );
+  });
+};
+
+export const subscribeToAgentByUid = (
+  uid: string,
+  callback: (agent: Agent | null) => void
+): (() => void) => {
+  return subscribeToAgents((agents) => {
+    callback(agents.find((a) => a.uid === uid) || null);
+  });
+};
+
+export const updateAgent = async (id: string, data: Partial<Agent>) => {
+  await update(ref(database, `agents/${id}`), data);
+};
+
+export const deleteAgent = async (id: string) => {
+  await remove(ref(database, `agents/${id}`));
+};
+
+export const getApprovedAgentByCode = async (code: string): Promise<Agent | null> => {
+  const snapshot = await get(ref(database, "agents"));
+  if (!snapshot.exists()) return null;
+  const normalized = code.trim().toUpperCase();
+  const agents = Object.entries(snapshot.val()).map(
+    ([key, value]: [string, any]) => ({ id: key, ...value })
+  ) as Agent[];
+  return agents.find((a) => a.code?.toUpperCase() === normalized && a.status === "approved") || null;
+};
