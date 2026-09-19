@@ -95,6 +95,8 @@ export interface Subscription {
   expiresAt: string;
   isActive: boolean;
   createdAt: string;
+  agentCode?: string;
+  agentId?: string;
 }
 
 export interface Transaction {
@@ -112,6 +114,8 @@ export interface Transaction {
   phone?: string;
   provider?: "mtn" | "airtel";
   transactionRef?: string;
+  agentCode?: string;
+  agentId?: string;
 }
 
 export interface WalletData {
